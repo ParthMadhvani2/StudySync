@@ -1,0 +1,14 @@
+# dotenv files
+.env
+
+# dependencies directories
+node_modules/
+
+# operating system files
+.DS_Store
+
+# automatically generated files
+.o
+
+# runtime files
+.log
