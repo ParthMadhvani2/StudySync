@@ -2,6 +2,8 @@ const User = require("../models/User");
 const OTP = require("../models/OTP");
 const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config;
 
 //send OTP
 exports.sendOTP = async (req,res) => {
@@ -162,8 +164,143 @@ exports.signUp = async (req,res) => {
 
 //login
 exports.login = async (req,res) => {
-    
-}
+    try{
+        // get data from request body
+        const {email,password} = req.body;
+
+        // validation of data
+        if(!email || !password){
+            return res.status(403).json({
+                success:true,
+                message:"Please fill details correctly, please try again",
+            });
+        }
+
+        // check user exists or not
+        const user = await User.findOne({email}).populate("additionalDetails");
+        if(!user){
+            return res.status(401).json({
+                success:false,
+                message:"User is not registered, please signup first",
+            });
+        }
+
+        // generate JWT, after match of password
+        if(await bcrypt.compare(password, user.password)){
+            const payload = {
+                email : user.email,
+                id : user._id,
+                role :user.role,
+            }
+            const token = jwt.sign(payload, process.env.JWT_SECRET, {
+                expiresIn:"2h",
+            });
+            user.token = token;
+            user.password = undefined;
+            
+            // create cookie and send response
+            const options = {
+                expires : new Date(Date.now() + 3*24*60*60*1000),
+                httpOnly:true,
+            }
+            res.cookie("token",token,options).status(200).json({
+                success:true,
+                token,
+                user,
+                message:"Logged In successfully",
+            })
+        }
+        else{
+            return res.status(401).json({
+                success:false,
+                message:"Password is incorrect",
+            });
+        }
+
+
+    }
+    catch(error){
+        console.log(error);
+        return res.status(500).json({
+            success:false,
+            message:"login faliure, please try again",
+        });
+    }
+};
 
 
 //change Password
+exports.changePassword = async (req,res) => {
+    try{
+        // get data from request body
+        const userDetails = await User.findById(req.user.id);
+        
+        // get oldPassword, newPassword, confirmPasword
+        const {oldPassword, newPassword, confirmNewPassword} = req.body;
+        
+        // validation old password
+        const isPasswordMatch = await bcrypt.compare(
+            oldPassword,
+            userDetails.password,
+        );
+        if(!isPasswordMatch){
+            // If old password does not match, return a 401 (Unauthorized) error
+            return res.status(401).json({
+                success:false,
+                message:"The password is incorrect",
+            });
+        }
+        // Match new password and confirm new password
+        if (newPassword !== confirmNewPassword) {
+            // If new password and confirm new password do not match, return a 400 (Bad Request) error
+            return res.status(400).json({
+                success: false,
+                message: "The password and confirm password does not match",
+            });
+        }
+
+        // update password in DB
+        const encryptedPassword = await bcrypt.hash(newPassword,10);
+        const updatedUserDetails = await User.findByIdAndUpdate(
+            req.user.id,
+            {password :encryptedPassword},
+            {new:true},
+        );
+
+        // send mail password updated
+        try{
+            const emailResponse = await amilSender(
+                updatedUserDetails.email,
+                passwordUpdated(
+                    updatedUserDetails.email,
+                    `Password updated successfully for ${updatedUserDetails.firstName} ${updatedUserDetails.lastName}`
+                )
+            );
+            console.log("Email sent successfully:", emailResponse.response);
+        }
+        catch(error){
+            // If there is an error in sending mail, log the error and return a 500 (Internal Server Error) error
+            console.log("Error occured while sending the email: ",error);
+            return res.status(500).json({
+                success:false,
+                message:"Error occured while sending email",
+                error: error.message,
+            });
+        }
+        // return success response
+        return res.status(200).json({
+            success:true,
+            message:"Password updated successfully",
+        });
+    }
+    catch(error){
+        // If there's an error updating the password, log the error and return a 500 (Internal Server Error) error
+		console.error("Error occurred while updating password:", error);
+
+        return res.status(500).json({
+            success:false,
+            message:"Error occurred while updating password",
+            error: error.message,
+        });
+    }
+};
