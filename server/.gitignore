@@ -1,14 +1,41 @@
 # dotenv files
 .env
+.local
 
 # dependencies directories
-node_modules/
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
 
-# operating system files
+# operating system files/ misc
 .DS_Store
+*.pem
 
 # automatically generated files
 .o
 
 # runtime files
 .log
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
