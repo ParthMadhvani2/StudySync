@@ -59,10 +59,10 @@ exports.sendOTP = async (req,res) => {
         return res.status(500).json({
             success:false,
             message:error.message,
-        })
+        });
     }
 
-}
+};
 
 //Signup
 exports.signUp = async (req,res) => {
@@ -160,7 +160,7 @@ exports.signUp = async (req,res) => {
             message:"User cannot be registered, please try again",
         });
     }
-}
+};
 
 //login
 exports.login = async (req,res) => {

@@ -42,7 +42,7 @@ exports.resetPasswordToken = async (req,res) => {
             message:"Something went wrong while sending reset password mail",
         });
     }
-}
+};
 
 
 //reset Password
@@ -94,4 +94,4 @@ exports.resetPassword = async (req,res) => {
             message:"Something went wrong while sending reset password mail",
         });
     }
-}
+};
