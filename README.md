@@ -1,7 +1,7 @@
 # Frontend
 ## Figma file
 UI build by Parth Madhvani with 🤍.
-Check out the Figma design ![here](https://www.figma.com/file/0Umsb2bJ0JxMGowIjoTYcZ/StudyNotion?type=design&node-id=0%3A1&mode=design&t=nQ4FMZ5e0Y6S5iPu-1)
+Check out the Figma design [here](https://www.figma.com/file/0Umsb2bJ0JxMGowIjoTYcZ/StudyNotion?type=design&node-id=0%3A1&mode=design&t=mn5owa87txCpNOjE-1)
 
 ## how to run react and backend at the same time ?
 
