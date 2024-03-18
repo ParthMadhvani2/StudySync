@@ -1,5 +1,5 @@
 const Course = require("../models/Course");
-const Tag = require("../models/Tags");
+const Category = require("../models/Category");
 const User = require("../models/User");
 const {uploadImageToCloudinary} = require("../utlis/imageuploader");
 
@@ -7,13 +7,13 @@ const {uploadImageToCloudinary} = require("../utlis/imageuploader");
 exports.createCourse = async (req,res) => {
     try{
         //fetch data
-        const {courseName,courseDescription, whatYouWillLearn, price, tag} = req.body;
+        const {courseName,courseDescription, whatYouWillLearn, price, category} = req.body;
 
         //get thumbnail
         const thumbnail = req.files.thumbnailImage;
 
         // validation
-        if(!courseName || !courseDescription || !whatYouWillLearn || !price || !tag || !thumbnail){
+        if(!courseName || !courseDescription || !whatYouWillLearn || !price || !category || !thumbnail){
             return res.status(400).json({
                 success:false,
                 message:"All fields are required",
@@ -24,6 +24,7 @@ exports.createCourse = async (req,res) => {
         const userId = req.user.id;
         const instructorDetails = await User.findById(userId);
         console.log("Instructor Details: ",instructorDetails);
+        //to be checked
 
         if(!instructorDetails){
             return res.status(404).json({
@@ -32,12 +33,12 @@ exports.createCourse = async (req,res) => {
             });
         }
 
-        //check given tag is valid or not
-        const tagDetails = await Tag.findById(tag);
-        if(!tagDetails){
+        //check given category is valid or not
+        const categoryDetails = await Category.findById(category);
+        if(!categoryDetails){
             return res.status(404).json({
                 success:false,
-                message:"Tag details not found",
+                message:"Category details not found",
             });
         }
 
@@ -51,7 +52,7 @@ exports.createCourse = async (req,res) => {
             instructor: instructorDetails._id,
             whatYouWillLearn: whatYouWillLearn,
             price,
-            tag:tagDetails._id,
+            category:categoryDetails._id,
             thumbnail:thumbnailImage.secure_url,
         })
 
@@ -64,9 +65,59 @@ exports.createCourse = async (req,res) => {
                 }
             },
             {new:true},
-        )
+        );
+
+        //update the tag ka schema
+        await Category.findByIdAndUpdate(
+            {_id: category},
+            {
+                $push:{
+                    courses: newCourse._id,
+                }
+            },
+            {new:true},
+        );//to be checked
+
+        //return response
+        return res.status(200).json({
+            success:true,
+            data:newCourse,
+            message:"Course Created Successfully",
+        });
     }
-    catch(error){}
+    catch(error){
+        return res.status(500).json({
+            success:false,
+            message:"Failed to create course",
+            error:error.message,
+        });
+    }
 };
 
 //getall courses handler function
+
+exports.showAllCourses = async (req,res) => {
+    try{// to be checked
+        const allCourses = await Course.find({},{courseName:true,
+                                                price:true,
+                                                instructor:true,
+                                                thumbnail:true,
+                                                ratingAndReviews:true,
+                                                studentsEnrolled:true,})
+                                                .populate("instructor")
+                                                .exec();
+
+        return res.status(200).json({
+            success:true,
+            message:"Data for all courses fetch successfully",
+        });
+    }
+
+    catch(error){
+        return res.status(500).json({
+            success:false,
+            message:"Not fetch course data",
+            error:error.message,
+        });
+    }
+}
