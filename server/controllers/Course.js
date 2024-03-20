@@ -120,4 +120,4 @@ exports.showAllCourses = async (req,res) => {
             error:error.message,
         });
     }
-}
+};

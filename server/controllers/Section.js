@@ -1,7 +1,7 @@
 const Section = require("../models/Section");
 const Course = require("../models/Course");
 
-exports.createSection = async (req,res){
+exports.createSection = async (req,res) => {
     try{
         //data fetch
         const {sectionName, courseId} = req.body;
@@ -39,7 +39,7 @@ exports.createSection = async (req,res){
             error:error.message,
         });
     }
-}
+};
 
 
 exports.updateSection = async (req,res) =>{
@@ -68,7 +68,7 @@ exports.updateSection = async (req,res) =>{
             error:error.message,
         });
     }
-}
+};
 
 
 exports.deleteSection = async(req,res) => {
@@ -77,6 +77,7 @@ exports.deleteSection = async(req,res) => {
         const {sectionId} = req.params;
         //use findbyIdanddelete
         await Section.findByIdAndDelete(sectionId);
+        //[testing] do we need to delete the course schema from data?
         //return response
         return res.status(200).json({
             success:true,
@@ -90,4 +91,4 @@ exports.deleteSection = async(req,res) => {
             error:error.message,
         });
     }
-}
+};
