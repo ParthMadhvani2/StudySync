@@ -1,11 +1,14 @@
+const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const OTP = require("../models/OTP");
-const otpGenerator = require("otp-generator");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-require("dotenv").config;
+const otpGenerator = require("otp-generator");
+const mailSender = require("../utils/mailSender");
+const { passwordUpdated } = require("../mail/templates/passwordUpdate");
+const Profile = require("../models/Profile");
+require("dotenv").config();
 
-//send OTP
+// Send OTP For Email Verification
 exports.sendOTP = async (req,res) => {
     try{
     
@@ -15,13 +18,14 @@ exports.sendOTP = async (req,res) => {
         //check if user already exists
         const checkUserPresent = await User.findOne({email});
 
-        //if already exists, then return response
-        if(checkUserPresent){
-            return res.status(401).json({
-                success:false,
-                message:"User already registered",
-            })
-        }
+		// If user found with provided email
+		if (checkUserPresent) {
+			// Return 401 Unauthorized status code with error message
+			return res.status(401).json({
+				success: false,
+				message: `User is Already Registered`,
+			});
+		}
 
         //generate otp (I have used a bad logic for unique OTP generation but further I would prefer to use a unique OTP generate library)
         var otp = otpGenerator.generate(6, {
@@ -29,30 +33,30 @@ exports.sendOTP = async (req,res) => {
             lowerCaseAlphabets:false,
             specialChars:false,
         });
-        console.log("OTP generated :",otp);
 
         //check unique otp or not
-        let result = await OTP.findOne({otp:otp});
-        while(result){
-            otp = otpGenerator(6, {
-                upperCaseAlphabets:false,
-                lowerCaseAlphabets:false,
-                specialChars:false,
-            });
-        }
+		const result = await OTP.findOne({ otp: otp });
+		console.log("Result is Generate OTP Func");
+		console.log("OTP", otp);
+		console.log("Result", result);
+		while (result) {
+			otp = otpGenerator.generate(6, {
+				upperCaseAlphabets: false,
+			});
+		}
 
-        const otpPayload = {email,otp};
+		const otpPayload = { email, otp };
 
         // create an entry for OTP in DB
-        const otpBody = await OTP.create(otpPayload);
-        console.log(otpBody);
+		const otpBody = await OTP.create(otpPayload);
+		console.log("OTP Body", otpBody);
 
         // return response successfully
-        res.status(200).json({
-            success:true,
-            message:"OTP send Successfully",
-            otp,
-        })
+		res.status(200).json({
+			success: true,
+			message: `OTP Sent Successfully`,
+			otp,
+		});
     }
     catch(error){
         console.log("Error has occoured in generating OTP :",error);
@@ -162,28 +166,32 @@ exports.signUp = async (req,res) => {
     }
 };
 
-//login
+// Login controller for authenticating users
 exports.login = async (req,res) => {
     try{
         // get data from request body
         const {email,password} = req.body;
 
         // validation of data
-        if(!email || !password){
-            return res.status(403).json({
-                success:true,
-                message:"Please fill details correctly, please try again",
-            });
-        }
+		if (!email || !password) {
+			// Return 400 Bad Request status code with error message
+			return res.status(400).json({
+				success: false,
+				message: `Please Fill up All the Required Fields`,
+			});
+		}
 
-        // check user exists or not
-        const user = await User.findOne({email}).populate("additionalDetails");
-        if(!user){
-            return res.status(401).json({
-                success:false,
-                message:"User is not registered, please signup first",
-            });
-        }
+		// Find user with provided email
+		const user = await User.findOne({ email }).populate("additionalDetails");
+
+		// If user not found with provided email
+		if (!user) {
+			// Return 401 Unauthorized status code with error message
+			return res.status(401).json({
+				success: false,
+				message: `User is not Registered with Us Please SignUp to Continue`,
+			});
+		}
 
         // generate JWT, after match of password
         if(await bcrypt.compare(password, user.password)){
@@ -229,7 +237,7 @@ exports.login = async (req,res) => {
 };
 
 
-//change Password
+// Controller for Changing Password
 exports.changePassword = async (req,res) => {
     try{
         // get data from request body
