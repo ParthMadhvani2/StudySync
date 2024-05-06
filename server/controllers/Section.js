@@ -1,6 +1,7 @@
 const Section = require("../models/Section");
 const Course = require("../models/Course");
 
+// CREATE a new section
 exports.createSection = async (req,res) => {
     try{
         //data fetch
@@ -70,7 +71,7 @@ exports.updateSection = async (req,res) =>{
         console.error("Error updating section:", error);
         return res.status(500).json({
             success:false,
-            message:"Unable to create section, please try again",
+            message: "Internal server error",
             error:error.message,
         });
     }

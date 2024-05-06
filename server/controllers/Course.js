@@ -3,6 +3,7 @@ const Category = require("../models/Category");
 const User = require("../models/User");
 const {uploadImageToCloudinary} = require("../utlis/imageuploader");
 
+// Function to create a new course
 //create course handler function
 exports.createCourse = async (req,res) => {
 	try {

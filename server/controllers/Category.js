@@ -79,7 +79,7 @@ exports.categoryPageDetails = async (req, res) => {
                                          .exec();
 
             //get top 10 selling courses
-            
+            //create routes using (methods, path, handler functions )
 
             //return response
             return res.status(200).json({
