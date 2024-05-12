@@ -1,11 +1,9 @@
 const Course = require("../models/Course");
 const Category = require("../models/Category");
 const User = require("../models/User");
-const {uploadImageToCloudinary} = require("../utlis/imageuploader");
-
+const { uploadImageToCloudinary } = require("../utils/imageUploader");
 // Function to create a new course
-//create course handler function
-exports.createCourse = async (req,res) => {
+exports.createCourse = async (req, res) => {
 	try {
 		// Get user ID from request object
 		const userId = req.user.id;
@@ -122,9 +120,7 @@ exports.createCourse = async (req,res) => {
 	}
 };
 
-
-//getall courses handler function
-exports.getAllCourses = async (req,res) => {
+exports.getAllCourses = async (req, res) => {
 	try {
 		const allCourses = await Course.find(
 			{},
@@ -153,51 +149,52 @@ exports.getAllCourses = async (req,res) => {
 	}
 };
 
-// get course details
-exports.getCourseDetails = async (req,res) => {
-	try{
-		//get id
-		const {courseId} = req.body;
-		//find course details
-		const courseDetails = await Course.find(
-										{_id:courseId})
-										.populate(
-											{
-												path:"instructor",
-												populate:{
-													path:"additionalDetails",
-												},
-											}
-										)
-										.populate("category")
-										.populate("ratingAndReviews")
-										.populate({
-											path:"courseContent",
-											populate:{
-												path:"subSection",
-											},
-										})
-										.exec();
-		
-		//validation
-		if(!courseDetails){
-			return res.status(400).json({
-				success: false,
-				message: `Couldn't find course with ${courseId}`
-			});
-		}
-		//return res
-		return res.status(200).json({
-			success: true,
-			message: "Course details fetched successfully ",
-			data: courseDetails,
-		});
-	}
-	catch(error){
-		console.log(error);
-		return res.status(500).json({
-			success: false,
-			message: error.message,
-		});
-	}
-};
+//getCourseDetails
+exports.getCourseDetails = async (req, res) => {
+    try {
+            //get id
+            const {courseId} = req.body;
+            //find course details
+            const courseDetails = await Course.find(
+                                        {_id:courseId})
+                                        .populate(
+                                            {
+                                                path:"instructor",
+                                                populate:{
+                                                    path:"additionalDetails",
+                                                },
+                                            }
+                                        )
+                                        .populate("category")
+                                        //.populate("ratingAndreviews")
+                                        .populate({
+                                            path:"courseContent",
+                                            populate:{
+                                                path:"subSection",
+                                            },
+                                        })
+                                        .exec();
+
+                //validation
+                if(!courseDetails) {
+                    return res.status(400).json({
+                        success:false,
+                        message:`Could not find the course with ${courseId}`,
+                    });
+                }
+                //return response
+                return res.status(200).json({
+                    success:true,
+                    message:"Course Details fetched successfully",
+                    data:courseDetails,
+                })
+
+    }
+    catch(error) {
+        console.log(error);
+        return res.status(500).json({
+            success:false,
+            message:error.message,
+        });
+    }
+}

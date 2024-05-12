@@ -1,7 +1,7 @@
 // Import necessary modules
 const SubSection = require("../models/SubSection");
 const Section = require("../models/Section");
-const uploadImageToCloudinary = require("../utlis/imageuploader");
+const uploadImageToCloudinary = require("../utils/imageUploader");
 
 // Create a new sub-section for a given section
 exports.creteSubSection = async (req,res) =>{

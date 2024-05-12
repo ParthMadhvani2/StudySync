@@ -3,7 +3,7 @@ const app = express();
 
 
 const userRoutes = require('./routes/User');
-const courseRoutes = require('./routes/Course');
+const courseRoutes = require("./routes/Course");
 const paymentRoutes = require('./routes/Payments');
 const profileRoutes = require('./routes/Profile');
 
@@ -54,3 +54,6 @@ app.get("/", (req,res) => {
 });
 
 // activate server
+app.listen(PORT, () => {
+    console.log(`App is running at ${PORT}`);
+});
