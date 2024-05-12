@@ -92,6 +92,7 @@ exports.capturePayment = async (req, res) => {
 
 exports.verifySignature = async (req, res) => {
     const webhookSecret = "12345678";
+
     const signature = req.headers["x-razorpay-signature"];
 
     const shasum =  crypto.createHmac("sha256", webhookSecret);
@@ -105,6 +106,7 @@ exports.verifySignature = async (req, res) => {
 
         try{
                 //fulfil the action
+
                 //find the course and enroll the student in it
                 const enrolledCourse = await Course.findOneAndUpdate(
                                                 {_id: courseId},
@@ -129,31 +131,36 @@ exports.verifySignature = async (req, res) => {
                 );
 
                 console.log(enrolledStudent);
-            //send mail of the confirmation
-            const emailResponse = await mailSender(
-                                            enrolledStudent.email,
-                                            "Congratulations from Hackerspace",
-                                            "Congratulations, you are onboard into new Javascript Course",
-            );
 
-            console.log(emailResponse);
-            return res.status(200).json({
-                success:true,
-                message:"Signature Verified and COurse Added",
+                //mail send krdo confirmation wala 
+                const emailResponse = await mailSender(
+                                        enrolledStudent.email,
+                                        "Congratulations from CodeHelp",
+                                        "Congratulations, you are onboarded into new CodeHelp Course",
+                );
+
+                console.log(emailResponse);
+                return res.status(200).json({
+                    success:true,
+                    message:"Signature Verified and COurse Added",
+                });
+
+
+        }       
+        catch(error) {
+            console.log(error);
+            return res.status(500).json({
+                success:false,
+                message:error.message,
             });
-    }       
-    catch(error) {
-        console.log(error);
-        return res.status(500).json({
+        }
+    }
+    else {
+        return res.status(400).json({
             success:false,
-            message:error.message,
+            message:'Invalid request',
         });
     }
-}
-else {
-    return res.status(400).json({
-        success:false,
-        message:'Invalid request',
-    });
-}
+
+
 };
