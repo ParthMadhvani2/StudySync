@@ -220,10 +220,7 @@ exports.sendotp = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error.message);
-		return res.status(500).json({ 
-			success: false, 
-			error: error.message
-		 });
+		return res.status(500).json({ success: false, error: error.message });
 	}
 };
 
@@ -243,10 +240,9 @@ exports.changePassword = async (req, res) => {
 		);
 		if (!isPasswordMatch) {
 			// If old password does not match, return a 401 (Unauthorized) error
-			return res.status(401).json({ 
-				success: false, 
-				message: "The password is incorrect" 
-			});
+			return res
+				.status(401)
+				.json({ success: false, message: "The password is incorrect" });
 		}
 
 		// Match new password and confirm new password

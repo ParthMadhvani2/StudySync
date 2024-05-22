@@ -12,14 +12,14 @@ exports.createCategory = async (req, res) => {
 				.json({ success: false, message: "All fields are required" });
 		}
         //create entry in DB
-        const CategorysDetails = await Category.create({
+		const CategorysDetails = await Category.create({
 			name: name,
 			description: description,
 		});
 		console.log(CategorysDetails);
-		
+        
         //return response
-        return res.status(200).json({
+		return res.status(200).json({
 			success: true,
 			message: "Categorys Created Successfully",
 		});
