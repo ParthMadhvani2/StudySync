@@ -64,7 +64,7 @@ const Home = () => {
                 heading={
                     <div className='text-4xl font-semibold'>
                         Unlock Your
-                        <HighlightText text={"coding potential"}/>
+                        <HighlightText text={"coding potential "}/>
                         with our online courses
                     </div>
                 }
@@ -97,13 +97,12 @@ const Home = () => {
                 position={"lg:flex-row-reverse"}
                 heading={
                     <div className='text-4xl font-semibold'>
-                        Unlock Your
-                        <HighlightText text={"coding potential"}/>
-                        with our online courses
+                        Start
+                        <HighlightText text={"coding in seconds "}/>
                     </div>
                 }
                 subheading = {
-                    "Our courses are designed and taught by industry experts who have years of experience in coding and are passionate about sharing their knowledge with you."
+                    "Go ahead, give it a try. Our hands-on learning environment means you'll be writing real code from your very first lesson."
                 }
                 ctabtn1={
                     {
@@ -129,6 +128,9 @@ const Home = () => {
       </div>
 
         {/* Section 2 */}
+        <div className=''>
+            <div></div>
+        </div>
         {/* Section 3 */}
         {/* footer */}
     </div>
