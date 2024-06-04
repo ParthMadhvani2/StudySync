@@ -1,34 +1,101 @@
-# Frontend
-## Figma file
+# StudySync
+
+## Design UI/UX ( Figma )
 UI build by Parth Madhvani with 🤍.
-Check out the Figma design [here](https://www.figma.com/file/0Umsb2bJ0JxMGowIjoTYcZ/StudyNotion?type=design&node-id=0%3A1&mode=design&t=mn5owa87txCpNOjE-1)
+Check out the Figma design [here](https://www.figma.com/design/0Umsb2bJ0JxMGowIjoTYcZ/StudySync?node-id=0-1&t=CH4UX9yXAudOoDQW-1)
 
-## how to run react and backend at the same time ?
+## Project Description
 
-- `npm i concurrently` install in root folder
-- then in the frontend `package.json` file do below changes.
-```
-"scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "eject": "react-scripts eject",
-    "server": "cd server && npm run dev",
-    "dev": "concurrently -n \"client,server\" -c \"bgBlue,bgYellow\" \"npm start\" \"npm run server\""
-  },
-```
-- then `npm run dev` to start both at the same time with single command
+StudySync is a comprehensive ed-tech platform that fosters a dynamic learning environment by allowing users to create, consume, and rate educational content. This project is built using the MERN stack, combining ReactJS, NodeJS, MongoDB, and ExpressJS.
 
-# Backend
+StudySync aims to:
 
-## DB schema design
+- Provide students with a seamless and interactive learning experience, making education accessible and engaging.
+- Offer instructors a platform to showcase their expertise and connect with learners worldwide.
+
+## Tech Stack
+
+- **Frontend**: ReactJS with Tailwind CSS
+- **Backend**: NodeJS, ExpressJS
+- **Database**: MongoDB
+- **Deployment**: Vercel (Frontend), Render or Railway (Backend), MongoDB Atlas (Database)
+- **Media Management**: Cloudinary
+- **State Management**: Redux
+
+
+## Features
+
+StudySync offers the following key features:
+
+### For Students:
+
+- **Homepage**: A brief introduction to the platform with links to the course list and user details.
+  
+- **Course List**: Access to a list of all available courses, including descriptions and ratings.
+  
+- **Wishlist**: View and manage courses added to your wishlist.
+  
+- **Cart Checkout**: Complete course purchases securely.
+  
+- **Course Content**: Access course-specific content, including videos and related materials.
+  
+- **User Details**: Access and manage your account information, including name, email, and other relevant details.
+  
+- **User Edit Details**: Edit your account information as needed.
+
+- **Course Enrollment**: Easily enroll in courses to access their content.
+
+### For Instructors:
+
+- **Dashboard**: Overview of instructor's courses, ratings, and feedback.
+  
+- **Insights**: Detailed insights into course metrics, including views, clicks, and more.
+  
+- **Course Management Pages**: Create, update, delete, and manage courses, content, and pricing.
+  
+- **View and Edit Profile Details**: Access and edit instructor account details.
+
+### For Admin (future scope):
+
+- **Dashboard**: Overview of platform courses, instructors, and students.
+  
+- **Insights**: Detailed platform metrics, including registered users, courses, and revenue.
+  
+- **Instructor Management**: Admin tools to manage instructors, their accounts, courses, and ratings.
+  
+- **Other Relevant Pages**: Additional admin functions like user and course management.
+
+
+## How to Run
+
+### Frontend
+
+1. Navigate to the frontend directory.
+   ```bash
+   cd frontend
+   ```
+
+2. Install dependencies.
+   ```bash
+   npm install
+   ```
+
+3. Start the frontend server.
+   ```bash
+   npm run start
+   ```
+
+### Backend
+
+#### DB schema design
 
 ![image](./assets/db-schema.png)
 
 
-## How OTP is working ?
+#### How OTP is working ?
 ![image](./assets/otp-working.png)
 
-## How payment gateway working in backend using RAZORPAY ?
+#### How payment gateway working in backend using RAZORPAY ?
 ![diagram-export-1-10-2024-8_43_19-AM](./assets/payment-gateway-working.png)
 
 
@@ -90,7 +157,7 @@ app.post('/payment-success', (req, res) => {
 - once the payment is proceed successfully by the user, RazorPay will send a POST REQ through webhook to the WEBHOOK URL that you have set in the razorpay dashboard.Handle the verification of payment in the `/payment-success` route
 - we have to add the "SIGNATURE VERIFICATION URL" in the webhook of the razorpay dashboard. 
 
-## Problems that i faced
+### Problems that i faced
 - Buttons are not available of LOGIN and SIGNUP. I forgot to set the value of user loggedin profile in locat storage.How I solved it? - i got 2 ways here 1= that i used in my first notes appliaction if there is token available in cookies firstly then put the request on backend and grab the details of user. 2= set the local storage values while login is successfull and i choose the second way because i want to learn something new about local storage.
 
 - MATCHROUTE function fata gaya and error was Calling the original function again and again recursive function without and condition so it is doing infinite looping. How i solved it ? - i just change the function name and everything is working fine.
@@ -117,4 +184,4 @@ app.post('/payment-success', (req, res) => {
 - videoDetails with previous,next video is challaenging 
 
 
-- Made with ♥️ Parth Madhvani © 2024 Studynotion
+- Made with ♥️ Parth Madhvani © 2024 StudySync
